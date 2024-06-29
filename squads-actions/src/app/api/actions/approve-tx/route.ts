@@ -28,7 +28,7 @@ export const GET = async (req: Request) => {
 
     const payload: ActionGetResponse = {
       title: "Approve Squads Transaction",
-      icon: new URL("/squad_blink.jpg", requestUrl.origin).toString(),
+      icon: new URL("/squad_blink.jpeg", requestUrl.origin).toString(),
       description: "Cast your vote on a Squads Transaction.",
       label: "SquadsTransaction", // this value will be ignored since `links.actions` exists
       links: {
