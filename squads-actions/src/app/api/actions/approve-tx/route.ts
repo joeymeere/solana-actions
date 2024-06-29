@@ -28,7 +28,7 @@ export const GET = async (req: Request) => {
 
     const payload: ActionGetResponse = {
       title: "Approve Squads Transaction",
-      icon: new URL("/bun_blink.webp", requestUrl.origin).toString(),
+      icon: new URL("/squad_blink.jpg", requestUrl.origin).toString(),
       description: "Cast your vote on a Squads Transaction.",
       label: "SquadsTransaction", // this value will be ignored since `links.actions` exists
       links: {
@@ -89,24 +89,8 @@ export const POST = async (req: Request) => {
       process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta")
     );
 
-    const proposal = multisig.getProposalPda({
-      multisigPda: new PublicKey(squad),
-      transactionIndex: BigInt(transactionIndex),
-    });
-
     const transaction = new Transaction();
     transaction.feePayer = account;
-
-    if (!proposal) {
-      transaction.add(
-        await multisig.instructions.proposalCreate({
-          multisigPda: squad,
-          creator: account,
-          transactionIndex: BigInt(transactionIndex),
-          isDraft: false,
-        })
-      );
-    }
 
     transaction.add(
       await multisig.instructions.proposalApprove({
