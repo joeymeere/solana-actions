@@ -11,6 +11,7 @@ import {
   PublicKey,
   Transaction,
 } from "@solana/web3.js";
+//@ts-ignore
 import * as multisig from "@sqds/multisig";
 
 export const GET = async (req: Request) => {
