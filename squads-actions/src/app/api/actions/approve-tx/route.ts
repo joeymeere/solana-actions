@@ -22,7 +22,7 @@ export const GET = async (req: Request) => {
     const { squad, transactionIndex } = validatedQueryParams(requestUrl);
 
     const baseHref = new URL(
-      `/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}`,
+      `/api/actions/approve-tx?squad=${squad}&txIndex=${requestUrl.searchParams.get("txIndex")!}`,
       requestUrl.origin
     ).toString();
 
@@ -97,6 +97,7 @@ export const POST = async (req: Request) => {
         multisigPda: squad,
         transactionIndex: BigInt(transactionIndex),
         member: account,
+        programId: multisig.PROGRAM_ID
       })
     );
 
@@ -147,7 +148,7 @@ function validatedQueryParams(requestUrl: URL) {
       transactionIndex = parseInt(requestUrl.searchParams.get("txIndex")!);
     }
   } catch (err) {
-    throw "Invalid input query parameter: to";
+    throw err;
   }
 
   return {
