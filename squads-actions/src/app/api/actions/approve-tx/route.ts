@@ -18,13 +18,11 @@ export const GET = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
 
-    // This needs to be the Squads vault address
+    // This needs to be the Squads multisig address
     const { squad, transactionIndex } = validatedQueryParams(requestUrl);
 
-    const index = transactionIndex == 1 ? requestUrl.searchParams.get("txIndex")! : transactionIndex;
-
     const baseHref = new URL(
-      `/api/actions/approve-tx?squad=${squad}&txIndex=${index}`,
+      `/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}`,
       requestUrl.origin
     ).toString();
 
@@ -37,15 +35,15 @@ export const GET = async (req: Request) => {
         actions: [
           {
             label: "Approve",
-            href: `${baseHref}&action=${"Approve"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"Approve"}`,
           },
           {
             label: "Reject",
-            href: `${baseHref}&action=${"Reject"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"Reject"}`,
           },
           {
             label: "Approve & Execute",
-            href: `${baseHref}&action=${"ApproveExecute"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"ApproveExecute"}`,
           },
         ],
       },
