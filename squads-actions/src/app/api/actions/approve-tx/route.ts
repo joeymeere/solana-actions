@@ -21,8 +21,10 @@ export const GET = async (req: Request) => {
     // This needs to be the Squads vault address
     const { squad, transactionIndex } = validatedQueryParams(requestUrl);
 
+    const index = transactionIndex == 1 ? requestUrl.searchParams.get("txIndex")! : transactionIndex;
+
     const baseHref = new URL(
-      `/api/actions/approve-tx?squad=${squad}&txIndex=${requestUrl.searchParams.get("txIndex")!}`,
+      `/api/actions/approve-tx?squad=${squad}&txIndex=${index}`,
       requestUrl.origin
     ).toString();
 
