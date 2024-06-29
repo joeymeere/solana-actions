@@ -19,10 +19,10 @@ export const GET = async (req: Request) => {
     const requestUrl = new URL(req.url);
 
     // This needs to be the Squads multisig address
-    const { squad, transactionIndex } = validatedQueryParams(requestUrl);
+    const { squad, transactionIndex } = await validatedQueryParams(requestUrl);
 
     const baseHref = new URL(
-      `/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}`,
+      `/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}`,
       requestUrl.origin
     ).toString();
 
@@ -35,15 +35,15 @@ export const GET = async (req: Request) => {
         actions: [
           {
             label: "Approve",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"Approve"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"Approve"}`,
           },
           {
             label: "Reject",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"Reject"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"Reject"}`,
           },
           {
             label: "Approve & Execute",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&txIndex=${transactionIndex}&action=${"ApproveExecute"}`,
+            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"ApproveExecute"}`,
           },
         ],
       },
@@ -70,7 +70,7 @@ export const OPTIONS = GET;
 export const POST = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
-    const { squad, transactionIndex } = validatedQueryParams(requestUrl);
+    let { squad, transactionIndex } = await validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
 
@@ -131,7 +131,8 @@ export const POST = async (req: Request) => {
   }
 };
 
-function validatedQueryParams(requestUrl: URL) {
+async function validatedQueryParams(requestUrl: URL) {
+  const connection = new Connection(process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"));
   let squad: PublicKey = new PublicKey("HFwi9HgNtFcMwNJPHa1czrPhuxeZFZ7G9tPQ1LqAd7sy");
   let transactionIndex = 1;
 
@@ -143,9 +144,16 @@ function validatedQueryParams(requestUrl: URL) {
     throw err;
   }
 
+  const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
+    connection,
+    squad
+  );
+
+  transactionIndex = Number(multisigInfo.transactionIndex);
+
   try {
-    if (requestUrl.searchParams.get("txIndex")) {
-      transactionIndex = parseInt(requestUrl.searchParams.get("txIndex")!);
+    if (requestUrl.searchParams.get("tx")) {
+      transactionIndex = Number(requestUrl.searchParams.get("tx")!);
     }
   } catch (err) {
     throw err;
