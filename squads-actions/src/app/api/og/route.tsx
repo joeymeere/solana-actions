@@ -4,8 +4,6 @@ import * as multisig from "@sqds/multisig";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
-export const runtime = "edge";
-
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
 
