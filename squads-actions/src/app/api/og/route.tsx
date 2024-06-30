@@ -1,4 +1,4 @@
-//@ts-nocheck
+
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 import * as multisig from "@sqds/multisig";
@@ -83,17 +83,10 @@ export const GET = async (req: NextRequest) => {
                 tw="flex flex-col items-center p-4 w-48 h-32"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
-                  {multisigInfo.account.threshold +
-                    "/" +
-                    multisigInfo.account.members.length}
+                  {transactionInfo.approved.length}
                 </p>
-                <p
-                  style={{
-                    fontFamily: "Neue-Light",
-                  }}
-                  tw="text-base text-zinc-200"
-                >
-                  Threshold
+                <p style={{}} tw="text-base text-zinc-200">
+                  Approved
                 </p>
               </div>
               <div
@@ -105,10 +98,17 @@ export const GET = async (req: NextRequest) => {
                 tw="ml-4 flex flex-col items-center p-4 w-48 h-32"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
-                  {multisigInfo.account.transactionIndex}
+                  {multisigInfo.account.threshold +
+                    "/" +
+                    multisigInfo.account.members.length}
                 </p>
-                <p style={{}} tw="text-base text-zinc-200">
-                  Transactions
+                <p
+                  style={{
+                    fontFamily: "Neue-Light",
+                  }}
+                  tw="text-base text-zinc-200"
+                >
+                  Threshold
                 </p>
               </div>
               <div
