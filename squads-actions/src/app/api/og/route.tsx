@@ -32,23 +32,15 @@ export const GET = async (req: NextRequest) => {
 
   const meta = multisigInfo.metadata;
 
-  /*
-  const [proposal, bump] = multisig.getProposalPda({
-    multisigPda: new PublicKey(vault!),
-    transactionIndex: BigInt(Number(index)),
-    programId: multisig.PROGRAM_ID
-  });
-  */
-
   const [proposal, bump] = await PublicKey.findProgramAddressSync(
     [
-        Buffer.from("multisig"),
-        new PublicKey(squad!).toBuffer(),
-        Buffer.from("transaction"),
-        new anchor.BN(parseInt(index!)).toArrayLike(Buffer, "le", 8),
-        Buffer.from("proposal")
+      Buffer.from("multisig"),
+      new PublicKey(squad!).toBuffer(),
+      Buffer.from("transaction"),
+      new anchor.BN(parseInt(index!)).toArrayLike(Buffer, "le", 8),
+      Buffer.from("proposal"),
     ],
-    multisig.PROGRAM_ID
+    multisig.PROGRAM_ID,
   );
 
   const transactionInfo = await multisig.accounts.Proposal.fromAccountAddress(
@@ -84,8 +76,9 @@ export const GET = async (req: NextRequest) => {
             <div tw="mt-4 flex">
               <div
                 style={{
-                  background: "url('https://i.imgur.com/NbwCUm7.png')",
+                  backgroundColor: "#A9A9A9",
                   backgroundSize: "100% 100%",
+                  borderRadius: "25px",
                 }}
                 tw="flex flex-col items-center p-4 w-48 h-32"
               >
@@ -98,36 +91,38 @@ export const GET = async (req: NextRequest) => {
                   style={{
                     fontFamily: "Neue-Light",
                   }}
-                  tw="text-base text-zinc-300"
+                  tw="text-base text-zinc-200"
                 >
                   Threshold
                 </p>
               </div>
               <div
                 style={{
-                  background: "url('https://i.imgur.com/NbwCUm7.png')",
+                  backgroundColor: "#A9A9A9",
                   backgroundSize: "100% 100%",
+                  borderRadius: "25px",
                 }}
                 tw="ml-4 flex flex-col items-center p-4 w-48 h-32"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
                   {multisigInfo.account.transactionIndex}
                 </p>
-                <p style={{}} tw="text-base text-zinc-300">
+                <p style={{}} tw="text-base text-zinc-200">
                   Transactions
                 </p>
               </div>
               <div
                 style={{
-                  background: "url('https://i.imgur.com/NbwCUm7.png')",
+                  backgroundColor: "#A9A9A9",
                   backgroundSize: "100% 100%",
+                  borderRadius: "25px",
                 }}
                 tw="ml-4 flex flex-col items-center p-4 w-48 h-32"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
                   {transactionInfo.status.__kind}
                 </p>
-                <p style={{}} tw="text-base text-zinc-300">
+                <p style={{}} tw="text-base text-zinc-200">
                   Status
                 </p>
               </div>
