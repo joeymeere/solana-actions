@@ -76,7 +76,7 @@ export const GET = async (req: NextRequest) => {
             <div tw="mt-4 flex">
               <div
                 style={{
-                  backgroundColor: "#A9A9A9",
+                  backgroundColor: "#1E1E20",
                   backgroundSize: "100% 100%",
                   borderRadius: "25px",
                 }}
@@ -91,7 +91,7 @@ export const GET = async (req: NextRequest) => {
               </div>
               <div
                 style={{
-                  backgroundColor: "#A9A9A9",
+                  backgroundColor: "#1E1E20",
                   backgroundSize: "100% 100%",
                   borderRadius: "25px",
                 }}
@@ -113,7 +113,7 @@ export const GET = async (req: NextRequest) => {
               </div>
               <div
                 style={{
-                  backgroundColor: "#A9A9A9",
+                  backgroundColor: "#1E1E20",
                   backgroundSize: "100% 100%",
                   borderRadius: "25px",
                 }}
