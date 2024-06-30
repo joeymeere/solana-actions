@@ -45,7 +45,7 @@ export const GET = async (req: Request) => {
     const payload: ActionGetResponse = {
       title: `Approve ${meta.name} Squads Transaction`,
       icon: imageUrl,
-      description: `Cast your vote on a Squads Transaction #${transactionIndex} for ${meta.name}.`,
+      description: `Cast your vote on transaction #${transactionIndex} for ${meta.name}.`,
       label: "SquadsTransaction", // this value will be ignored since `links.actions` exists
       links: {
         actions: [
