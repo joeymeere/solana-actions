@@ -31,10 +31,21 @@ export const GET = async (req: Request) => {
       requestUrl.origin,
     ).toString();
 
+    const vault = multisig.getVaultPda({
+      multisigPda: new PublicKey(squad!),
+      index: 0,
+    });
+  
+    const multisigInfo = await fetch(
+      `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
+    ).then((res) => res.json());
+  
+    const meta = multisigInfo.metadata;
+
     const payload: ActionGetResponse = {
-      title: "Approve Squads Transaction",
+      title: `Approve ${meta.title} Squads Transaction`,
       icon: imageUrl,
-      description: "Cast your vote on a Squads Transaction.",
+      description: `Cast your vote on a Squads Transaction #${transactionIndex} for ${meta.title}.`,
       label: "SquadsTransaction", // this value will be ignored since `links.actions` exists
       links: {
         actions: [
@@ -95,6 +106,17 @@ export const POST = async (req: Request) => {
     const connection = new Connection(
       process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"),
     );
+
+    const vault = multisig.getVaultPda({
+      multisigPda: new PublicKey(squad!),
+      index: 0,
+    });
+  
+    const multisigInfo = await fetch(
+      `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
+    ).then((res) => res.json());
+
+    const meta = multisigInfo.metadata;
 
     const transaction = new Transaction();
     transaction.feePayer = account;
@@ -158,7 +180,7 @@ export const POST = async (req: Request) => {
             : action === "Reject"
             ? "Rejected"
             : "Approved and executed"
-        } transaction ${transactionIndex} for ${squad.toBase58()}`,
+        } transaction #${transactionIndex} for ${meta.title}`,
       },
       // note: no additional signers are needed
       // signers: [],
