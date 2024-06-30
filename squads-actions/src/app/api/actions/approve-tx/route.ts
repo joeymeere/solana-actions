@@ -152,7 +152,7 @@ export const POST = async (req: Request) => {
             ? "Approved"
             : action === "Reject"
             ? "Rejected"
-            : "Approved and Executed"
+            : "Approved and executed"
         } transaction ${transactionIndex} for ${squad.toBase58()}`,
       },
       // note: no additional signers are needed
