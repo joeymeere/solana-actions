@@ -126,6 +126,7 @@ export const POST = async (req: Request) => {
             multisigPda: squad,
             transactionIndex: BigInt(transactionIndex),
             member: account,
+            programId: multisig.PROGRAM_ID
           })
         ).instruction,
       );
@@ -146,7 +147,13 @@ export const POST = async (req: Request) => {
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction,
-        message: `Vote on transaction ${transactionIndex} for ${squad.toBase58()}`,
+        message: `${
+          action === "Approve"
+            ? "Approved"
+            : action === "Reject"
+            ? "Rejected"
+            : "Approved and Executed"
+        } transaction ${transactionIndex} for ${squad.toBase58()}`,
       },
       // note: no additional signers are needed
       // signers: [],
