@@ -23,7 +23,7 @@ export const GET = async (req: Request) => {
 
     const baseHref = new URL(
       `/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}`,
-      requestUrl.origin
+      requestUrl.origin,
     ).toString();
 
     const payload: ActionGetResponse = {
@@ -35,15 +35,15 @@ export const GET = async (req: Request) => {
         actions: [
           {
             label: "Approve",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"Approve"}`,
+            href: `${baseHref}&action=${"Approve"}`,
           },
           {
             label: "Reject",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"Reject"}`,
+            href: `${baseHref}&action=${"Reject"}`,
           },
           {
             label: "Approve & Execute",
-            href: `${requestUrl.origin}/api/actions/approve-tx?squad=${squad}&tx=${transactionIndex}&action=${"ApproveExecute"}`,
+            href: `${baseHref}&action=${"ApproveExecute"}`,
           },
         ],
       },
@@ -70,7 +70,9 @@ export const OPTIONS = GET;
 export const POST = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
-    let { squad, transactionIndex } = await validatedQueryParams(requestUrl);
+    let { squad, transactionIndex, action } = await validatedQueryParams(
+      requestUrl,
+    );
 
     const body: ActionPostRequest = await req.json();
 
@@ -86,20 +88,53 @@ export const POST = async (req: Request) => {
     }
 
     const connection = new Connection(
-      process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta")
+      process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"),
     );
 
     const transaction = new Transaction();
     transaction.feePayer = account;
 
-    transaction.add(
-      await multisig.instructions.proposalApprove({
-        multisigPda: squad,
-        transactionIndex: BigInt(transactionIndex),
-        member: account,
-        programId: multisig.PROGRAM_ID
-      })
-    );
+    if (action == "Approve") {
+      transaction.add(
+        await multisig.instructions.proposalApprove({
+          multisigPda: squad,
+          transactionIndex: BigInt(transactionIndex),
+          member: account,
+          programId: multisig.PROGRAM_ID,
+        }),
+      );
+    } else if (action === "Reject") {
+      transaction.add(
+        await multisig.instructions.proposalReject({
+          multisigPda: squad,
+          transactionIndex: BigInt(transactionIndex),
+          member: account,
+          programId: multisig.PROGRAM_ID,
+        }),
+      );
+    } else if (action == "ApproveExecute") {
+      transaction.add(
+        await multisig.instructions.proposalApprove({
+          multisigPda: squad,
+          transactionIndex: BigInt(transactionIndex),
+          member: account,
+          programId: multisig.PROGRAM_ID,
+        }),
+        (
+          await multisig.instructions.vaultTransactionExecute({
+            connection,
+            multisigPda: squad,
+            transactionIndex: BigInt(transactionIndex),
+            member: account,
+          })
+        ).instruction,
+      );
+    } else {
+      return new Response("No supported action was selected", {
+        status: 400,
+        headers: ACTIONS_CORS_HEADERS,
+      });
+    }
 
     // set the end user as the fee payer
     transaction.feePayer = account;
@@ -132,8 +167,13 @@ export const POST = async (req: Request) => {
 };
 
 async function validatedQueryParams(requestUrl: URL) {
-  const connection = new Connection(process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"));
-  let squad: PublicKey = new PublicKey("HFwi9HgNtFcMwNJPHa1czrPhuxeZFZ7G9tPQ1LqAd7sy");
+  const connection = new Connection(
+    process.env.SOLANA_RPC! || clusterApiUrl("mainnet-beta"),
+  );
+  let squad: PublicKey = new PublicKey(
+    "HFwi9HgNtFcMwNJPHa1czrPhuxeZFZ7G9tPQ1LqAd7sy",
+  );
+  let action: string | null = requestUrl.searchParams.get("action");
   let transactionIndex = 1;
 
   try {
@@ -146,7 +186,7 @@ async function validatedQueryParams(requestUrl: URL) {
 
   const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
     connection,
-    squad
+    squad,
   );
 
   transactionIndex = Number(multisigInfo.transactionIndex);
@@ -162,5 +202,6 @@ async function validatedQueryParams(requestUrl: URL) {
   return {
     squad,
     transactionIndex,
+    action,
   };
 }
