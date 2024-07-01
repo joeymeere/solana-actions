@@ -206,7 +206,7 @@ export const GET = async (req: NextRequest) => {
                   >
                     <p tw="text-white font-bold mb-0.5">✅ Approved: </p>
                     {proposalInfo.approved.slice(0, 4).map((key, i) => (
-                      <p tw="text-zinc-300 text-sm my-0">
+                      <p key={i} tw="text-zinc-300 text-sm my-0">
                         •{" "}
                         {key.toString().slice(0, 4) +
                           "..." +
@@ -234,7 +234,7 @@ export const GET = async (req: NextRequest) => {
                   >
                     <p tw="text-white font-bold mb-0.5">❌ Rejected: </p>
                     {proposalInfo.rejected.slice(0, 4).map((key, i) => (
-                      <p tw="text-zinc-300 text-sm my-0">
+                      <p key={i} tw="text-zinc-300 text-sm my-0">
                         •{" "}
                         {key.toString().slice(0, 4) +
                           "..." +
@@ -263,7 +263,7 @@ export const GET = async (req: NextRequest) => {
                   >
                     <p tw="text-white font-bold mb-0.5">⏰ Pending: </p>
                     {pending.slice(0, 3).map((member: any, i: number) => (
-                      <p tw="text-zinc-300 text-sm my-0">
+                      <p key={i} tw="text-zinc-300 text-sm my-0">
                         •{" "}
                         {member.key.toString().slice(0, 4) +
                           "..." +
