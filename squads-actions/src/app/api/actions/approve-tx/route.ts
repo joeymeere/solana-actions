@@ -13,6 +13,7 @@ import {
 } from "@solana/web3.js";
 //@ts-ignore
 import * as multisig from "@sqds/multisig";
+import * as anchor from "@coral-xyz/anchor";
 
 export const GET = async (req: Request) => {
   try {
@@ -39,11 +40,11 @@ export const GET = async (req: Request) => {
     const multisigInfo = await fetch(
       `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
     ).then((res) => res.json());
-  
+
     const meta = multisigInfo.metadata;
 
     const payload: ActionGetResponse = {
-      title: `Approve ${meta.name} Squads Transaction`,
+      title: `Approve ${meta.name} Transaction`,
       icon: imageUrl,
       description: `Cast your vote on transaction #${transactionIndex} for ${meta.name}.`,
       label: "SquadsTransaction", // this value will be ignored since `links.actions` exists
