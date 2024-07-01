@@ -295,13 +295,13 @@ export const GET = async (req: NextRequest) => {
                     </p>
                   </div>
                   <div style={{ display: "flex", gap: 0 }} tw="flex-col text-zinc-200 text-sm">
-                    <p tw="mt-0.5 mb-0 py-0 text-zinc-400 text-xs mb-0 bg-[#00000]/25 rounded-[10px] px-1 w-18">🧞‍♂️ Signers:</p>
+                    <p tw="mt-0.5 mb-0 py-0 text-zinc-400 text-xs mb-0 bg-[#00000]/25 rounded-[10px] px-1 w-18">📝 Signers:</p>
                     <p className="text-zinc-200 text-xs mt-0.5">
                       {transactionInfo.message.numSigners}
                     </p>
                   </div>
                   <div style={{ display: "flex", gap: 0 }} tw="flex flex-col gap-0 text-zinc-200 text-sm">
-                    <p tw="mt-0.5 text-zinc-400 text-xs mb-0 bg-[#00000]/25 rounded-[10px] px-1 w-24">🧞‍♂️ Instructions:</p>
+                    <p tw="mt-0.5 text-zinc-400 text-xs mb-0 bg-[#00000]/25 rounded-[10px] px-1 w-24">💾 Instructions:</p>
                     <p className="text-zinc-200 text-xs mt-0">
                       {transactionInfo.message.instructions.length}
                     </p>
