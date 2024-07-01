@@ -202,7 +202,7 @@ export const GET = async (req: NextRequest) => {
                       backgroundColor: "#1E1E20",
                       borderRadius: "25px",
                     }}
-                    tw="flex flex-col text-white px-4 pt-0 pb-2"
+                    tw="flex flex-col text-white px-4 pt-0 pb-2 h-36"
                   >
                     <p tw="text-white font-bold mb-0.5">✅ Approved: </p>
                     {proposalInfo.approved.slice(0, 4).map((key, i) => (
@@ -230,7 +230,7 @@ export const GET = async (req: NextRequest) => {
                       backgroundColor: "#1E1E20",
                       borderRadius: "25px",
                     }}
-                    tw="flex flex-col text-white px-4 pt-0 pb-2 ml-4"
+                    tw="flex flex-col text-white px-4 pt-0 pb-2 ml-4 h-36"
                   >
                     <p tw="text-white font-bold mb-0.5">❌ Rejected: </p>
                     {proposalInfo.rejected.slice(0, 4).map((key, i) => (
@@ -259,7 +259,7 @@ export const GET = async (req: NextRequest) => {
                       backgroundColor: "#1E1E20",
                       borderRadius: "25px",
                     }}
-                    tw="flex flex-col gap-0 text-white px-4 pt-0 pb-2 ml-4"
+                    tw="flex flex-col gap-0 text-white px-4 pt-0 pb-2 ml-4 h-36"
                   >
                     <p tw="text-white font-bold mb-0.5">⏰ Pending: </p>
                     {pending.slice(0, 3).map((member: any, i: number) => (
