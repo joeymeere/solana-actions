@@ -1,8 +1,10 @@
-//@ts-nocheck
+
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
+import * as spl from "@solana/spl-token";
 import * as multisig from "@sqds/multisig";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { getMintAddress } from "../actions/donate/utils";
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -16,13 +18,33 @@ export const GET = async (req: NextRequest) => {
   const hasMint = searchParams.has("mint");
   const mint = hasMint ? searchParams.get("mint") : "USDC";
 
-  const vault = multisig.getVaultPda({
+  const mintKey = new PublicKey(getMintAddress(mint!)!);
+
+  const connection = new Connection(clusterApiUrl("mainnet-beta"));
+
+  let mintInfo = await spl.getMint(connection, mintKey);
+
+  const [vault, bump] = multisig.getVaultPda({
     multisigPda: new PublicKey(squad!),
     index: 0,
   });
 
+  const tokenAccount = spl.getAssociatedTokenAddressSync(
+    mintKey,
+    vault,
+    true
+  );
+
+  const decimals = mintInfo.decimals;
+
+  const tokenAccountInfo = await spl.getAccount(connection, tokenAccount).catch((err) => {
+    return null
+});
+
+  const balance = tokenAccountInfo ? Number(tokenAccountInfo.amount) / Math.pow(10, decimals) : 0;
+
   const multisigInfo = await fetch(
-    `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
+    `https://v4-api.squads.so/multisig/${vault.toString()}`,
   ).then((res) => res.json());
 
   const meta = multisigInfo.metadata;
@@ -62,10 +84,25 @@ export const GET = async (req: NextRequest) => {
                 tw="flex flex-col items-center p-4 w-48 h-32 shadow-lg"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
-                  {proposalInfo.approved.length}
+                  {balance}
                 </p>
                 <p style={{}} tw="text-base text-zinc-100">
-                  Approved
+                  Balance
+                </p>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#A9A9A9",
+                  backgroundSize: "100% 100%",
+                  borderRadius: "25px",
+                }}
+                tw="ml-4 flex flex-col items-center p-4 w-48 h-32 shadow-lg"
+              >
+                <p style={{}} tw="font-bold text-white text-3xl">
+                  {mint}
+                </p>
+                <p style={{}} tw="text-base text-zinc-100">
+                  Mint
                 </p>
               </div>
               <div
@@ -88,21 +125,6 @@ export const GET = async (req: NextRequest) => {
                   tw="text-base text-zinc-100"
                 >
                   Threshold
-                </p>
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#A9A9A9",
-                  backgroundSize: "100% 100%",
-                  borderRadius: "25px",
-                }}
-                tw="ml-4 flex flex-col items-center p-4 w-48 h-32 shadow-lg"
-              >
-                <p style={{}} tw="font-bold text-white text-3xl">
-                  {mint}
-                </p>
-                <p style={{}} tw="text-base text-zinc-100">
-                  Mint
                 </p>
               </div>
             </div>
