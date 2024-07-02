@@ -90,7 +90,7 @@ export const GET = async (req: NextRequest) => {
       >
         <div tw="flex flex-col w-3/4">
           <div tw="flex flex-col justify-between">
-            <img src={meta.image} tw="w-24 h-24 rounded-full" />
+            <img src={meta.image ? meta.image : "https://i.imgur.com/oDzVhvf.jpeg"} tw="w-24 h-24 rounded-full" />
             <h2
               style={{}}
               tw="text-5xl font-bold tracking-tight text-black text-left"

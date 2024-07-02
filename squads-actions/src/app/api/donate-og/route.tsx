@@ -5,6 +5,7 @@ import * as spl from "@solana/spl-token";
 import * as multisig from "@sqds/multisig";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { getMintAddress } from "../actions/donate/utils";
+import { nFormatter } from "@/lib/nFormatter";
 
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -67,7 +68,7 @@ export const GET = async (req: NextRequest) => {
       >
         <div tw="flex flex-col w-3/4">
           <div tw="flex flex-col justify-between">
-            <img src={meta.image} tw="w-24 h-24 rounded-full" />
+            <img src={meta.image ? meta.image : "https://i.imgur.com/oDzVhvf.jpeg"} tw="w-24 h-24 rounded-full" />
             <h2
               style={{}}
               tw="text-5xl font-bold tracking-tight text-black text-left"
@@ -84,7 +85,7 @@ export const GET = async (req: NextRequest) => {
                 tw="flex flex-col items-center p-4 w-48 h-32 shadow-lg"
               >
                 <p style={{}} tw="font-bold text-white text-3xl">
-                  {balance}
+                  {nFormatter(balance.toFixed(0))}
                 </p>
                 <p style={{}} tw="text-base text-zinc-100">
                   Balance
