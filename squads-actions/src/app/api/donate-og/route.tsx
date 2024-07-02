@@ -1,4 +1,4 @@
-
+//@ts-nocheck
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 import * as spl from "@solana/spl-token";
