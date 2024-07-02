@@ -30,22 +30,22 @@ export const GET = async (req: NextRequest) => {
     index: 0,
   });
 
-  const tokenAccount = spl.getAssociatedTokenAddressSync(
-    mintKey,
-    vault,
-    true
-  );
+  const tokenAccount = spl.getAssociatedTokenAddressSync(mintKey, vault, true);
 
   const decimals = mintInfo.decimals;
 
-  const tokenAccountInfo = await spl.getAccount(connection, tokenAccount).catch((err) => {
-    return null
-});
+  const tokenAccountInfo = await spl
+    .getAccount(connection, tokenAccount)
+    .catch((err) => {
+      return null;
+    });
 
-  const balance = tokenAccountInfo ? Number(tokenAccountInfo.amount) / Math.pow(10, decimals) : 0;
+  const balance = tokenAccountInfo
+    ? Number(tokenAccountInfo.amount) / Math.pow(10, decimals)
+    : 0;
 
   const multisigInfo = await fetch(
-    `https://v4-api.squads.so/multisig/${vault.toString()}`,
+    `https://v4-api.squads.so/multisig/${vault.toString()}?useProd=true`,
   ).then((res) => res.json());
 
   const meta = multisigInfo.metadata;
@@ -67,8 +67,12 @@ export const GET = async (req: NextRequest) => {
         }}
       >
         <div tw="flex flex-col w-3/4">
-          <div tw="flex flex-col justify-between">
-            <img src={meta.image ? meta.image : "https://i.imgur.com/oDzVhvf.jpeg"} tw="w-24 h-24 rounded-full" />
+          <div tw="relative flex flex-col justify-between">
+            <img
+              style={{}}
+              src={meta.image ? meta.image : "https://i.imgur.com/oDzVhvf.jpeg"}
+              tw="relative w-24 h-24 rounded-full object-cover"
+            />
             <h2
               style={{}}
               tw="text-5xl font-bold tracking-tight text-black text-left"

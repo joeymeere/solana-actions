@@ -20,12 +20,13 @@ import {
 import * as multisig from "@sqds/multisig";
 import * as spl from "@solana/spl-token";
 import { getMintAddress } from "./utils";
-import { v4 } from "uuid";
 
 export const GET = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
     const { squad, mint } = await validatedQueryParams(requestUrl);
+
+    const nonce = Math.floor(10000 + Math.random() * 90000);
 
     const baseHref = new URL(
       `/api/actions/donate?squad=${squad.toString()}&mint=${mint}`,
@@ -33,7 +34,7 @@ export const GET = async (req: Request) => {
     ).toString();
 
     const imageUrl = new URL(
-      `/api/donate-og?squad=${squad}&mint=${mint}&nonce=${v4().slice(0, 4)}`,
+      `/api/donate-og?squad=${squad}&mint=${mint}&nonce=${nonce}`,
       requestUrl.origin,
     ).toString();
 
