@@ -20,6 +20,7 @@ import {
 import * as multisig from "@sqds/multisig";
 import * as spl from "@solana/spl-token";
 import { getMintAddress } from "./utils";
+import { v4 } from "uuid";
 
 export const GET = async (req: Request) => {
   try {
@@ -32,7 +33,7 @@ export const GET = async (req: Request) => {
     ).toString();
 
     const imageUrl = new URL(
-      `/api/donate-og?squad=${squad}&mint=${mint}`,
+      `/api/donate-og?squad=${squad}&mint=${mint}&nonce=${v4().slice(0, 4)}`,
       requestUrl.origin,
     ).toString();
 
