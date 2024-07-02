@@ -142,6 +142,9 @@ export const POST = async (req: Request) => {
         true
       );
 
+      let mintInfo = await spl.getMint(connection, mintAddressKey);
+      const decimals = mintInfo.decimals;
+
       const tokenAccountInfo = await connection.getAccountInfo(vaultTokenAccount);
 
       if (!tokenAccountInfo || !tokenAccountInfo.data) transaction.add(
@@ -158,7 +161,7 @@ export const POST = async (req: Request) => {
           sourceTokenAccount,
           vaultTokenAccount,
           account,
-          amount
+          amount * Math.pow(10, decimals)
         )
       );
     }
