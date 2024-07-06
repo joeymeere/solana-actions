@@ -14,6 +14,7 @@ import {
 //@ts-ignore
 import * as multisig from "@sqds/multisig";
 import * as anchor from "@coral-xyz/anchor";
+import { redirect } from "next/navigation";
 
 export const GET = async (req: Request) => {
   try {
@@ -36,7 +37,7 @@ export const GET = async (req: Request) => {
       multisigPda: new PublicKey(squad!),
       index: 0,
     });
-  
+
     const multisigInfo = await fetch(
       `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
     ).then((res) => res.json());
@@ -61,6 +62,10 @@ export const GET = async (req: Request) => {
           {
             label: "Approve & Execute",
             href: `${baseHref}&action=${"ApproveExecute"}`,
+          },
+          {
+            label: "Simulate",
+            href: `${baseHref}&action=${"Simulate"}`,
           },
         ],
       },
@@ -112,7 +117,7 @@ export const POST = async (req: Request) => {
       multisigPda: new PublicKey(squad!),
       index: 0,
     });
-  
+
     const multisigInfo = await fetch(
       `https://v4-api.squads.so/multisig/${vault[0].toString()}`,
     ).then((res) => res.json());
@@ -154,10 +159,30 @@ export const POST = async (req: Request) => {
             multisigPda: squad,
             transactionIndex: BigInt(transactionIndex),
             member: account,
-            programId: multisig.PROGRAM_ID
+            programId: multisig.PROGRAM_ID,
           })
         ).instruction,
       );
+    } else if (action == "Simulate") {
+      const [transaction, txBump] = await PublicKey.findProgramAddressSync(
+        [
+          Buffer.from("multisig"),
+          new PublicKey(squad!).toBuffer(),
+          Buffer.from("transaction"),
+          new anchor.BN(transactionIndex!).toArrayLike(Buffer, "le", 8),
+        ],
+        multisig.PROGRAM_ID,
+      );
+
+      const transactionInfo =
+        await multisig.accounts.VaultTransaction.fromAccountAddress(
+          connection,
+          transaction,
+        )!;
+
+      const message = transactionInfo.serialize();
+
+      redirect(`https://explorer.solana.com/tx/inspector/${message}`);
     } else {
       return new Response("No supported action was selected", {
         status: 400,
