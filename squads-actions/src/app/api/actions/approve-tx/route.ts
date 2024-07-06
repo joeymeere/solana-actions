@@ -182,7 +182,7 @@ export const POST = async (req: Request) => {
 
       const message = transactionInfo.serialize();
 
-      redirect(`https://explorer.solana.com/tx/inspector/${message}`);
+      return redirect(`https://explorer.solana.com/tx/inspector/${message}`);
     } else {
       return new Response("No supported action was selected", {
         status: 400,
