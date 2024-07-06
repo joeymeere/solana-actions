@@ -63,10 +63,12 @@ export const GET = async (req: Request) => {
             label: "Approve & Execute",
             href: `${baseHref}&action=${"ApproveExecute"}`,
           },
+          /*
           {
             label: "Simulate",
             href: `${baseHref}&action=${"Simulate"}`,
           },
+          */
         ],
       },
     };
