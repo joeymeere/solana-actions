@@ -45,7 +45,7 @@ export const GET = async (req: NextRequest) => {
     : 0;
 
   const multisigInfo = await fetch(
-    `https://v4-api.squads.so/multisig/${vault.toString()}?useProd=true`,
+    `https://v4-api.squads.so/multisig/${vault.toString()}`,
   ).then((res) => res.json());
 
   const meta = multisigInfo.metadata;
